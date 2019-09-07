@@ -1422,6 +1422,7 @@ class ComputeManager(manager.Manager):
         if isinstance(group_hint, list):
             group_hint = group_hint[0]
 
+        # TODO: Instance group use case and relevant mechanism ... ?
         @utils.synchronized(group_hint)
         def _do_validation(context, instance, group_hint):
             group = objects.InstanceGroup.get_by_hint(context, group_hint)
@@ -2190,8 +2191,10 @@ class ComputeManager(manager.Manager):
             request_spec=None):
 
         image_name = image.get('name')
+        # TODO: Send some kind of notice to ...(where?), What's the subsequent action in below module
         self._notify_about_instance_usage(context, instance, 'create.start',
                 extra_usage_info={'image_name': image_name})
+        # TODO: Again. Is this only a notice?
         compute_utils.notify_about_instance_create(
             context, instance, self.host,
             phase=fields.NotificationPhase.START,
@@ -2203,6 +2206,7 @@ class ComputeManager(manager.Manager):
             {'boot_roles': ','.join(context.roles)})
 
         self._check_device_tagging(requested_networks, block_device_mapping)
+        # TODO: Be unknown for the procedure of authentication.
         self._check_trusted_certs(instance)
 
         request_group_resource_providers_mapping = \

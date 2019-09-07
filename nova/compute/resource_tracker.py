@@ -152,6 +152,17 @@ class ResourceTracker(object):
         self.cpu_allocation_ratio = CONF.cpu_allocation_ratio
         self.disk_allocation_ratio = CONF.disk_allocation_ratio
 
+    # instance 'inventory' and 'resource allocations' are claimed and requested here
+    # call -> _update -> _update_placement_.. -> driver->update_provider_tree
+    # so, the reource RP inventory is not ready after a compute node is built up.
+    # TODO: Check what has been done when compute node is ready.
+    #   nova/object/compute_node.py: no placement inventory is updated when a 'compute_node' object
+    #   is created.
+    #   BUT,
+    #   The inventory is updated in resource_tracker.update_available_resource, and if no compute node
+    #   eixisting for some resources, it will create a new compute node and update the inventory.
+    #   And 'resource_tracker.update_available_resource' is a method that is called periodically.
+    # TODO: Is there any periodic process in responsible to update the compute node inventory lively.
     @utils.synchronized(COMPUTE_RESOURCE_SEMAPHORE)
     def instance_claim(self, context, instance, nodename, limits=None):
         """Indicate that some resources are needed for an upcoming compute
@@ -947,6 +958,8 @@ class ResourceTracker(object):
 
         return list(traits)
 
+    # self.driver.update_provider_tree is the interface for updating host resources to placment
+    #
     @retrying.retry(stop_max_attempt_number=4,
                     retry_on_exception=lambda e: isinstance(
                         e, exception.ResourceProviderUpdateConflict))

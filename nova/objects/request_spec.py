@@ -94,8 +94,8 @@ class RequestSpec(base.NovaObject):
         # NOTE(alex_xu): This field won't be persisted.
         'network_metadata': fields.ObjectField('NetworkMetadata'),
         'is_bfv': fields.BooleanField(),
-        # NOTE(gibi): Eventually we want to store every resource request as
-        # RequestGroup objects here. However currently the flavor based
+        # NOTE(gibi): Eventually we want to store **every resource request** as
+        # **RequestGroup objects** here. However currently the flavor based
         # resources like vcpu, ram, disk, and flavor.extra_spec based resources
         # are not handled this way. See the Todo in from_components() where
         # requested_resources are set.
